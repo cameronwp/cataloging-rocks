@@ -18,20 +18,40 @@
         display: flex;
         width: 100%;
       }
+      .column-4 {
+        width: 25%;
+      }
+      .column-8 {
+        width: 75%;
+      }
       .wrap {
         flex-wrap: wrap;
       }
       .space-between {
         justify-content: space-between;
       }
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+      }
+      .hide {
+        display: none;
+      }
+
       .input {
         padding: 16px;
-        flex-grow: 3;
+      }
+      .edit-dimensions {
+        margin-bottom: 32px;
       }
       .current-dimensions {
         margin-bottom: 16px;
       }
-      .
+      .dimension-container {
+        width: 200px;
+      }
       .output {
         padding: 16px;
         flex-grow: 1;
@@ -40,9 +60,13 @@
   </head>
   <body>
     <main>
-      <div class="flex-container space-between">
+      <div class="column-8 left">
+        <div class="output">
+          <button id="generate">Generate CSV</button>
+          <button id="edit">Edit Dimensions</button>
+        </div>
         <div class="input">
-          <div class="dimensions">
+          <div class="edit-dimensions hide">
             <div class="current-dimensions flex-container wrap">No dimensions yet</div>
             <label for="add-dimension"><span>Add Dimension: </span><input id="add-dimension" placeholder="new dimension" type="text">
             </label>
@@ -51,13 +75,15 @@
             <label>Testing! <input type="text"></label>
           </div>
         </div>
-        <div class="output"><button id="generate">Generate CSV</button></div>
+      </div>
+      <div class="column-4 left">
+        <h3>Available Dimensions</h3>
+        <table id="dimension-display"></table>
       </div>
     </main>
   </body>
 
   <script>
-    // You can also require other files to run in this process
-    require('./renderer.js')
+    require('./renderer.js');
   </script>
 </html>
