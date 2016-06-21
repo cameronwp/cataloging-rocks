@@ -3,13 +3,52 @@
   <head>
     <meta charset="UTF-8">
     <title>Hello World!</title>
+    <style>
+      * {
+        box-sizing: border-box;        
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      main {
+        width: 100vw;
+      }
+      .flex-container {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .input {
+        padding: 16px;
+        flex-grow: 3;
+      }
+      .output {
+        padding: 16px;
+        flex-grow: 1;
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <main>
+      <div class="flex-container">
+        <div class="input">
+          <div class="dimensions">
+            <div class="current-dimensions">No dimensions yet</div>
+            <label for="add-dimension"><span>Add Dimension: </span><input id="add-dimension" type="text">
+            </label>
+            <label for="remove-dimension"><span>Remove Dimension: </span>
+              <input list="dimension-list" name="remove me" id="dimension-to-remove" />
+              <datalist id="dimension-list"></datalist>
+            </label>
+          </div>
+          <div class="data">
+            <label>Testing! <input type="text"></label>
+          </div>
+        </div>
+        <div class="output"><button id="generate">Generate CSV</button></div>
+      </div>
+    </main>
   </body>
 
   <script>
