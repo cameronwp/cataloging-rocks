@@ -16,13 +16,22 @@
       }
       .flex-container {
         display: flex;
-        justify-content: space-between;
         width: 100%;
+      }
+      .wrap {
+        flex-wrap: wrap;
+      }
+      .space-between {
+        justify-content: space-between;
       }
       .input {
         padding: 16px;
         flex-grow: 3;
       }
+      .current-dimensions {
+        margin-bottom: 16px;
+      }
+      .
       .output {
         padding: 16px;
         flex-grow: 1;
@@ -31,15 +40,11 @@
   </head>
   <body>
     <main>
-      <div class="flex-container">
+      <div class="flex-container space-between">
         <div class="input">
           <div class="dimensions">
-            <div class="current-dimensions">No dimensions yet</div>
-            <label for="add-dimension"><span>Add Dimension: </span><input id="add-dimension" type="text">
-            </label>
-            <label for="remove-dimension"><span>Remove Dimension: </span>
-              <input list="dimension-list" name="remove me" id="dimension-to-remove" />
-              <datalist id="dimension-list"></datalist>
+            <div class="current-dimensions flex-container wrap">No dimensions yet</div>
+            <label for="add-dimension"><span>Add Dimension: </span><input id="add-dimension" placeholder="new dimension" type="text">
             </label>
           </div>
           <div class="data">

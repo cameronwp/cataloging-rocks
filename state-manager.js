@@ -17,8 +17,9 @@ if (!nconf.get('inputs')) { nconf.set('inputs', []); }
 
 function StateManager() {
   const self = this;
+
   function findDimensionIndex(dimension) {
-    if (!dimension) { throw new TypeError(); }
+    if (!dimension || typeof dimension !== 'string') { throw new TypeError(); }
     return self.getDimensions().findIndex(d => d.name === dimension);
   }
 
@@ -43,11 +44,22 @@ function StateManager() {
   };
 
   this.addCategory = (dimension, category) => {
-    const foundIndex = findDimensionIndex();
+    const foundIndex = findDimensionIndex(dimension);
 
     if (foundIndex > -1) {
       const dimension = nconf.get('dimensions')[foundIndex];
-      
+      dimension.categories.push(category);
+      nconf.save();
+    }
+  };
+
+  this.removeCategory = (dimension, category) => {
+    const foundIndex = findDimensionIndex(dimension);
+
+    if (foundIndex > -1) {
+      const dimension = nconf.get('dimensions')[foundIndex];
+      dimension.categories.splice(foundIndex, 1);
+      nconf.save();
     }
   };
 
