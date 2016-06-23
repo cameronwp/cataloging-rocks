@@ -27,6 +27,11 @@ function StateManager() {
     return nconf.get('dimensions');
   }
 
+  this.getDimension = name => {
+    const foundIndex = findDimensionIndex(name);
+    return this.getDimensions()[foundIndex];
+  };
+
   this.addDimension = dimension => {
     const foundIndex = findDimensionIndex(dimension);
     if (foundIndex === -1) {
@@ -51,6 +56,7 @@ function StateManager() {
       
       if (dimension.categories.indexOf(category) === -1) {
         dimension.categories.push(category);
+        console.log(dimension, category);
         nconf.save();
       }
     }

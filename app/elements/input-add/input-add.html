@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 
-<dom-module id="my-list">
+<dom-module id="input-add">
   <template>
     <style>
       :host {
@@ -23,7 +23,7 @@
       'use strict';
 
       Polymer({
-        is: 'my-list',
+        is: 'input-add',
 
         properties: {
           dimensions: {
@@ -34,6 +34,13 @@
 
         ready: function() {
           // need to get the dimensions
+          this.dimensions = [
+            {
+             name: 'one'
+            }, {
+             name: 'two'
+            }
+          ];
         }
       });
     })();

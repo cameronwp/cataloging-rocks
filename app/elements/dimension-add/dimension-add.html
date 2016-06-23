@@ -32,8 +32,8 @@
     </style>
     
     <div class="dimension">
-      <paper-icon-button icon="delete" name="delete dimension"></paper-icon-button>
-      <paper-input class="new-dimension" label="Dimension Name" on-change="setName"></paper-input>
+      <paper-icon-button id="remove-dimension" icon="delete" name="delete dimension"></paper-icon-button>
+      <paper-input id="newDimension" class="new-dimension" label="Dimension Name" on-change="setName" value="{{name}}"></paper-input>
       </span>
     </div>
     <paper-icon-button icon="add" id="add-category" on-click="addCategory"></paper-icon-button>
@@ -51,19 +51,31 @@
           name: {
             type: String,
             value: ''
+          },
+          categories: {
+            type: Array
           }
         },
-        ready: function() {
+        attached: function() {
+          if (this.name) {
+            const dimension = stateManager.getDimension(this.name);
+            if (dimension.categories.length > 0) {
+              dimension.categories.forEach(c => this.addCategory(c));
+            }
+          }
         },
-        addCategory: function() {
+        addCategory: function(category) {
           const ca = document.createElement('category-add');
           ca.dimension = this.name;
+          if (typeof category === 'string') {
+            ca.name = category;
+          }
           this.$.categories.appendChild(ca);
         },
         setName: function(e) {
-          this.set('name', e.target.value);
-          this.addCategoryInput();
-          // and save it
+          const dimension = e.target.value;
+          stateManager.addDimension(dimension);
+          this.set('name', dimension);
         },
       });
     })();

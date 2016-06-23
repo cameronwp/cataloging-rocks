@@ -8,6 +8,7 @@
         width: 100%;
         display: block;
         background-color: #ddd;
+        overflow-y: scroll;
       }
 
       span {
@@ -40,6 +41,8 @@
 
         },
         ready: function() {
+          const dimensions = stateManager.getDimensions();
+          dimensions.forEach(d => this.addDimension(d));
         },
         toggle: function() {
           if (this.$.expando.icon === 'expand-less') {
@@ -49,8 +52,12 @@
           }
           this.$.collapse.toggle();
         },
-        addDimension: function() {
+        addDimension: function(dimension) {
           const ad = document.createElement('dimension-add');
+          if (dimension) {
+            ad.name = dimension.name;
+            ad.categories = dimension.categories;
+          }
           this.$.dimensions.appendChild(ad);
         }
       });

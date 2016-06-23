@@ -21,7 +21,7 @@
       }
     </style>
     
-    <paper-input class="new-category" label="New category" on-change="setName"></paper-input>
+    <paper-input class="new-category" label="New category" on-change="setName" value={{name}}></paper-input>
   </template>
 
   <script>
@@ -42,9 +42,9 @@
         },
         ready: function() {},
         setName: function(e) {
-          this.set('name', e.target.value);
-          // console.log(this.dimension); // works
-          // and save it
+          const category = e.target.value;
+          stateManager.addCategory(this.dimension, category);
+          this.set('name', category);
         }
       });
     })();
