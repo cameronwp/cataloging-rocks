@@ -18,13 +18,20 @@
       .content {
         padding: 8px 16px 16px 16px;
       }
+      paper-icon-button.remove-dimension {
+        display: inline-block;
+      }
     </style>
 
     <paper-icon-button icon="expand-less" id="expando" on-click="toggle"></paper-icon-button>
     <span>Dimension Editor</span>
     <iron-collapse id="collapse" opened="true">
       <div class="content">
-        <div id="dimensions"></div>
+        <div id="dimensions">
+          <template is="dom-repeat" items={{dimensions}}>
+             <dimension-add name="{{item.name}}" categories={{item.categories}} id={{item.id}}></dimension-add>
+          </template>
+        </div>
         <paper-icon-button icon="add" id="add-dimension" on-click="addDimension"></paper-icon-button><span>New Dimension</span>
       </div>
     </iron-collapse>
@@ -38,11 +45,14 @@
         is: 'dimension-editor',
 
         properties: {
-
+          dimensions: {
+            type: Array,
+            notify: true
+          }
         },
         ready: function() {
-          const dimensions = stateManager.getDimensions();
-          dimensions.forEach(d => this.addDimension(d));
+          this.dimensions = stateManager.getDimensions();
+          console.log(this.dimensions);
         },
         toggle: function() {
           if (this.$.expando.icon === 'expand-less') {

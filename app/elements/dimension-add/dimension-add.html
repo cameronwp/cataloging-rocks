@@ -20,7 +20,7 @@
       paper-icon-button {
         display: inline-block;
       }
-      #add-category {
+      .add-category {
         margin-left: 16px;
         height: 32px;
         margin-top: 20px;
@@ -31,13 +31,17 @@
       }
     </style>
     
-    <div class="dimension">
-      <paper-icon-button id="remove-dimension" icon="delete" name="delete dimension"></paper-icon-button>
-      <paper-input id="newDimension" class="new-dimension" label="Dimension Name" on-change="setName" value="{{name}}"></paper-input>
+    <div id="content" class="dimension">
+      <paper-icon-button id="remove-dimension" icon="delete" name="delete dimension" on-click="removeDimension"></paper-icon-button>
+      <paper-input id="newDimension" class="new-dimension" label="Dimension Name" on-change="save" value="{{name}}"></paper-input>
       </span>
     </div>
-    <paper-icon-button icon="add" id="add-category" on-click="addCategory"></paper-icon-button>
-    <div id="categories"></div>
+    <paper-icon-button id="add" icon="add" class="add-category" on-click="addCategory"></paper-icon-button>
+    <div id="categories">
+      <template is="dom-repeat" items={{categories}}>
+        <category-add name="{{item.name}}" id={{item.id}} dimension={{name}}></category-add>
+      </template>
+    </div>
   </template>
 
   <script>
@@ -50,33 +54,51 @@
         properties: {
           name: {
             type: String,
-            value: ''
+            value: '',
+            notify: true
           },
           categories: {
-            type: Array
+            type: Array,
+            notify: true
+          },
+          id: {
+            type: Number,
+            value: 0
           }
         },
-        attached: function() {
-          if (this.name) {
-            const dimension = stateManager.getDimension(this.name);
-            if (dimension.categories.length > 0) {
-              dimension.categories.forEach(c => this.addCategory(c));
-            }
-          }
-        },
+        attached: function() {},
         addCategory: function(category) {
           const ca = document.createElement('category-add');
           ca.dimension = this.name;
           if (typeof category === 'string') {
             ca.name = category;
+          } else if (typeof category === 'object') {
+            ca.name = category.name;
+            ca.id = category.id;
           }
           this.$.categories.appendChild(ca);
         },
-        setName: function(e) {
+        save: function(e) {
+          const self = this;
           const dimension = e.target.value;
-          stateManager.addDimension(dimension);
+          stateManager.saveDimension({
+            name: dimension,
+            categories: self.categories,
+            id: self.id
+          });
           this.set('name', dimension);
         },
+        removeDimension: function() {
+          const self = this;
+          stateManager.removeDimension({
+            name: self.name,
+            id: self.id,
+            categories: self.categories
+          });
+          this.$.content.style.display = 'none';
+          this.$.add.style.display = 'none';
+          this.$.categories.style.display = 'none';
+        }
       });
     })();
   </script>

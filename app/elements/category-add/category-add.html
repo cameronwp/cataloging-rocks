@@ -18,10 +18,18 @@
 
       paper-input.new-category {
         width: 8em;
+        display: inline-block;
+      }
+      paper-icon-button {
+        display: inline-block;
+        height: 32px;
       }
     </style>
     
-    <paper-input class="new-category" label="New category" on-change="setName" value={{name}}></paper-input>
+    <div id="content">
+      <paper-icon-button id="remove-category" icon="delete" name="delete category" on-click="removeCategory"></paper-icon-button>
+      <paper-input class="new-category" label="New category" on-change="save" value={{name}}></paper-input>
+    </div>
   </template>
 
   <script>
@@ -38,13 +46,29 @@
           name: {
             type: String,
             value: ''
+          },
+          id: {
+            type: Number,
+            value: 0
           }
         },
         ready: function() {},
-        setName: function(e) {
+        save: function(e) {
+          const self = this;
           const category = e.target.value;
-          stateManager.addCategory(this.dimension, category);
+          stateManager.saveCategory(self.dimension, {
+            name: self.name,
+            id: self.id || 0
+          });
           this.set('name', category);
+        },
+        removeCategory: function() {
+          stateManager.removeCategory(this.dimension, {
+            name: this.name,
+            id: this.id,
+            categories: this.categories
+          });
+          this.$.content.style.display = 'none';
         }
       });
     })();
