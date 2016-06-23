@@ -24,6 +24,7 @@
 
       Polymer({
         is: 'input-add',
+        behaviors: [Dimensions],
 
         properties: {
           dimensions: {
@@ -32,15 +33,8 @@
           }
         },
 
-        ready: function() {
-          // need to get the dimensions
-          this.dimensions = [
-            {
-             name: 'one'
-            }, {
-             name: 'two'
-            }
-          ];
+        attached: function() {
+
         }
       });
     })();

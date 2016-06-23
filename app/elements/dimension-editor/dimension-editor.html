@@ -43,16 +43,13 @@
 
       Polymer({
         is: 'dimension-editor',
+        behaviors: [Dimensions],
 
         properties: {
-          dimensions: {
-            type: Array,
-            notify: true
-          }
+          
         },
         ready: function() {
-          this.dimensions = stateManager.getDimensions();
-          console.log(this.dimensions);
+          this.toggle();
         },
         toggle: function() {
           if (this.$.expando.icon === 'expand-less') {

@@ -50,6 +50,7 @@
 
       Polymer({
         is: 'dimension-add',
+        behaviors: [Dimensions],
 
         properties: {
           name: {
@@ -87,6 +88,7 @@
             id: self.id
           });
           this.set('name', dimension);
+          this.updateDimensions();
         },
         removeDimension: function() {
           const self = this;
@@ -98,6 +100,7 @@
           this.$.content.style.display = 'none';
           this.$.add.style.display = 'none';
           this.$.categories.style.display = 'none';
+          this.updateDimensions();
         }
       });
     })();

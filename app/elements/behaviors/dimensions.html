@@ -1,0 +1,16 @@
+<script>
+  var Dimensions = {
+    properties: {
+      dimensions: {
+        type: Array,
+        notify: true
+      }
+    },
+    ready: function() {
+      this.updateDimensions();
+    },
+    updateDimensions: function() {
+      this.dimensions = stateManager.getDimensions();
+    }
+  }
+</script>

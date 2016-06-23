@@ -2,9 +2,6 @@ const remote = require('electron').remote;
 const app = remote.app;
 const fs = require('fs');
 
-const Dimension = require('./dimension');
-const Category = require('./category');
-
 var tempFile = null;
 if (!process.env.testing) {
   tempFile = app.getPath('appData') + '/temp.json';
@@ -24,7 +21,6 @@ function StateManager() {
   function findDimensionIndex(dimension) {
     if (!dimension) { throw new TypeError(); }
     const isMatch = self.getDimensions().findIndex(d => d.id === dimension.id || d.name === dimension || d.name === dimension.name);
-    console.log(isMatch);
     return isMatch;
   }
 
@@ -95,6 +91,10 @@ function StateManager() {
   };
 
   this.getInputs = () => nconf.get('inputs');
+
+  this.saveInput = input => {
+    
+  };
 
   this.saveInput = input => {
     // grab all the categories from the inputs
