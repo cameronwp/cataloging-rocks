@@ -1,0 +1,52 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="dimension-editor">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background-color: #ddd;
+      }
+
+      span {
+        @apply(--paper-font-body1);
+      }
+
+      .content {
+        padding: 16px;
+      }
+    </style>
+
+    <paper-icon-button icon="expand-less" id="expando" on-click="toggle"></paper-icon-button>
+    <iron-collapse id="collapse" opened="false">
+      <div class="content">
+        this is collapsible content
+      </div>
+    </iron-collapse>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'dimension-editor',
+
+        properties: {
+
+        },
+        ready: function() {
+        },
+        toggle: function() {
+          if (this.$.expando.icon === 'expand-less') {
+            this.$.expando.icon = 'expand-more';
+          } else if (this.$.expando.icon === 'expand-more') {
+            this.$.expando.icon = 'expand-less';
+          }
+          this.$.collapse.toggle();
+        }
+      });
+    })();
+  </script>
+</dom-module>

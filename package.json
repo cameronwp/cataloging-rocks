@@ -4,7 +4,9 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron main.js",
+    "watch": "npm-watch",
+    "package": "./node_modules/.bin/electron-packager app DSS --platform=darwin --arch=x64 --version=1.0.1 --app-category-type=public.app-category.education --icon=icon.icns --overwrite"
   },
   "repository": {
     "type": "git",
@@ -23,10 +25,17 @@
   },
   "homepage": "https://github.com/cameronwp/electron-quick-start#readme",
   "devDependencies": {
-    "electron-prebuilt": "^1.2.0"
+    "electron-prebuilt": "^1.2.0",
+    "npm-watch": "^0.1.4"
   },
-  "dependencies": {
-    "csv": "^1.1.0",
-    "nconf": "^0.8.4"
+  "watch": {
+    "start": {
+      "patterns": "app/**/*",
+      "extensions": [
+        "js",
+        "html",
+        "css"
+      ]
+    }
   }
 }

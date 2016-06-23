@@ -48,8 +48,11 @@ function StateManager() {
 
     if (foundIndex > -1) {
       const dimension = nconf.get('dimensions')[foundIndex];
-      dimension.categories.push(category);
-      nconf.save();
+      
+      if (dimension.categories.indexOf(category) === -1) {
+        dimension.categories.push(category);
+        nconf.save();
+      }
     }
   };
 
@@ -58,9 +61,22 @@ function StateManager() {
 
     if (foundIndex > -1) {
       const dimension = nconf.get('dimensions')[foundIndex];
-      dimension.categories.splice(foundIndex, 1);
+      const categoryIndex = dimension.categories.indexOf(category);
+      const removed = dimension.categories.splice(categoryIndex, 1);
       nconf.save();
     }
+  };
+
+  this.getInputs = () => nconf.get('inputs');
+
+  this.saveInput = input => {
+    // grab all the categories from the inputs
+    // turn it into an object
+    this.getInputs().push(input);
+  };
+
+  this.generateCSV = () => {
+    // loop and build!
   };
 
   this.clear = () => {
