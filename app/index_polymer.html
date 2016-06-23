@@ -67,11 +67,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template is="dom-bind" id="app">
     <paper-scroll-header-panel fixed>
       <div class="paper-header">
-        <paper-icon-button icon="folder-open" title="load" class="load"></paper-icon-button>
-        <paper-icon-button icon="save" title="save" class="export"></paper-icon-button>
+        <div class="icons">
+          <paper-icon-button icon="folder-open" title="load" class="load"></paper-icon-button>
+          <paper-icon-button icon="save" title="save" class="export"></paper-icon-button>
+        </div>
+        <dimension-editor></dimension-editor>
       </div>
       <div class="content">
-        <dimension-editor></dimension-editor>
+        <input-editor></input-editor>
       </div>
     </paper-scroll-header-panel>
   </template>

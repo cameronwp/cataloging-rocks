@@ -1,0 +1,71 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="dimension-add">
+  <template>
+    <style>
+      :host {
+        display: block;
+        /*transition: height 0.5s;*/
+      }
+
+      span {
+        @apply(--paper-font-body1);
+      }
+
+      paper-input.new-dimension {
+        display: inline-block;
+        width: 10em;
+      }
+      paper-icon-button {
+        display: inline-block;
+      }
+      #add-category {
+        margin-left: 16px;
+        height: 32px;
+        margin-top: 20px;
+      }
+      #categories {
+        margin-left: 64px;
+        display: inline-block;
+      }
+    </style>
+    
+    <div class="dimension">
+      <paper-icon-button icon="delete" name="delete dimension"></paper-icon-button>
+      <paper-input class="new-dimension" label="Dimension Name" on-change="setName"></paper-input>
+      </span>
+    </div>
+    <paper-icon-button icon="add" id="add-category" on-click="addCategory"></paper-icon-button>
+    <div id="categories"></div>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'dimension-add',
+
+        properties: {
+          name: {
+            type: String,
+            value: ''
+          }
+        },
+        ready: function() {
+        },
+        addCategory: function() {
+          const ca = document.createElement('category-add');
+          ca.dimension = this.name;
+          this.$.categories.appendChild(ca);
+        },
+        setName: function(e) {
+          this.set('name', e.target.value);
+          this.addCategoryInput();
+          // and save it
+        },
+      });
+    })();
+  </script>
+</dom-module>

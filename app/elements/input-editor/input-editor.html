@@ -1,13 +1,11 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 
-<dom-module id="dimension-editor">
+<dom-module id="input-editor">
   <template>
     <style>
       :host {
-        width: 100%;
         display: block;
-        background-color: #ddd;
       }
 
       span {
@@ -19,14 +17,10 @@
       }
     </style>
 
-    <paper-icon-button icon="expand-less" id="expando" on-click="toggle"></paper-icon-button>
-    <span>Dimension Editor</span>
-    <iron-collapse id="collapse" opened="true">
-      <div class="content">
-        <div id="dimensions"></div>
-        <paper-icon-button icon="add" id="add-dimension" on-click="addDimension"></paper-icon-button><span>New Dimension</span>
-      </div>
-    </iron-collapse>
+    <div class="content">
+      <div id="inputs"></div>
+      <paper-icon-button icon="add" id="add-input" on-click="addInput"></paper-icon-button><span>New Input</span>
+    </div>
   </template>
 
   <script>
@@ -34,7 +28,7 @@
       'use strict';
 
       Polymer({
-        is: 'dimension-editor',
+        is: 'input-editor',
 
         properties: {
 
@@ -49,9 +43,9 @@
           }
           this.$.collapse.toggle();
         },
-        addDimension: function() {
-          const ad = document.createElement('dimension-add');
-          this.$.dimensions.appendChild(ad);
+        addInput: function() {
+          const ai = document.createElement('input-add');
+          this.$.inputs.appendChild(ai);
         }
       });
     })();

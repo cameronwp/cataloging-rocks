@@ -16,3 +16,7 @@ body {
 .page-title {
   outline: none;
 }
+
+#headerBg {
+  background-color: salmon;
+}

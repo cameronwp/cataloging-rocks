@@ -1,0 +1,52 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="category-add">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      :host:not(:first-of-type) {
+        margin-left: 8px;
+      }
+
+      span {
+        @apply(--paper-font-body1);
+      }
+
+      paper-input.new-category {
+        width: 8em;
+      }
+    </style>
+    
+    <paper-input class="new-category" label="New category" on-change="setName"></paper-input>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'category-add',
+
+        properties: {
+          dimension: {
+            type: String
+          },
+          name: {
+            type: String,
+            value: ''
+          }
+        },
+        ready: function() {},
+        setName: function(e) {
+          this.set('name', e.target.value);
+          // console.log(this.dimension); // works
+          // and save it
+        }
+      });
+    })();
+  </script>
+</dom-module>
