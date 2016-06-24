@@ -1,0 +1,16 @@
+<script>
+  var Inputs = {
+    properties: {
+      inputs: {
+        type: Array,
+        notify: true
+      }
+    },
+    ready: function() {
+      this.updateInputs();
+    },
+    updateInputs: function() {
+      this.inputs = stateManager.getInputs();
+    }
+  };
+</script>

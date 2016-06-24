@@ -13,14 +13,8 @@
       }
     </style>
 
-    <template is="dom-repeat" items="{{dimensions}}" as="dimension">
-      <paper-dropdown-menu label={{dimension.name}}>
-        <paper-listbox class="dropdown-content">
-          <template is="dom-repeat" items={{dimension.categories}} as="category">
-            <paper-item>{{category.name}}</paper-item>
-          </template>
-        </paper-listbox>
-      </paper-dropdown-menu>
+    <template is="dom-repeat" items="{{dimensions}}">
+      <input-dropdown name="{{item.name}}" categories={{item.categories}} timestamp="{{timestamp}}"></input-dropdown>
     </template>
   </template>
 
@@ -33,14 +27,12 @@
         behaviors: [Dimensions],
 
         properties: {
-          dimensions: {
-            type: Array,
-            notify: true
-          }
+          
         },
 
         attached: function() {
-
+          this.updateDimensions();
+          // console.log(this.dimensions);
         }
       });
     })();

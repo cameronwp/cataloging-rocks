@@ -1,0 +1,76 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="input-dropdown">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      span {
+        @apply(--paper-font-body1);
+      }
+
+/*      paper-dropdown-menu {
+        --paper-input-container-label: {
+          color: #111;
+        }
+        --paper-input-container.underline: {
+          background: #111;
+        }
+      }*/
+    </style>
+
+    <paper-dropdown-menu label={{name}}>
+      <paper-listbox class="dropdown-content" on-iron-select="save">
+        <template is="dom-repeat" items={{categories}}>
+          <paper-item>{{item.name}}</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'input-dropdown',
+        behaviors: [Dimensions, Inputs],
+
+        properties: {
+          name: {
+            type: String,
+            notify: true
+          },
+          categories: {
+            type: Array,
+            notify: true
+          },
+          timestamp: {
+            type: Number,
+            value: 0
+          }
+        },
+
+        attached: function() {
+          this.updateDimensions();
+          if (!this.name) {
+            console.log(this.dimensions[this.dimensions.length - 1]);
+          }
+        },
+        save: function(e) {
+          let timestamp = this.timestamp;
+
+          stateManager.saveInput({
+            timestamp: timestamp,
+            property: this.name,
+            value: this.categories[e.target.selected]
+          });
+          this.updateInputs();
+        }
+      });
+    })();
+  </script>
+</dom-module>

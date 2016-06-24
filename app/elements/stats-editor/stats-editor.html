@@ -1,11 +1,12 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 
-<dom-module id="input-editor">
+<dom-module id="stats-editor">
   <template>
     <style>
       :host {
         display: block;
+        background-color: #7280FA;
       }
 
       span {
@@ -18,15 +19,10 @@
     </style>
     
     <paper-icon-button icon="expand-less" id="expando" on-click="toggle"></paper-icon-button>
-    <span>Input Editor</span>
+    <span>Stats Editor</span>
     <iron-collapse id="collapse" opened="true">
       <div class="content">
-        <div id="inputs">
-          <template is="dom-repeat" items="{{inputs}}">
-            <input-add timestamp="{{item.timestamp}}" sort="isEarlier"></input-add>
-          </template>
-        </div>
-        <paper-icon-button icon="add" id="add-input" on-click="addInput"></paper-icon-button><span>New Input</span>
+        suuuuuup
       </div>
     </iron-collapse>
   </template>
@@ -36,14 +32,13 @@
       'use strict';
 
       Polymer({
-        is: 'input-editor',
-        behaviors: [Inputs],
+        is: 'stats-editor',
 
         properties: {
 
         },
         ready: function() {
-          // console.log(this.inputs);
+          this.toggle();
         },
         toggle: function() {
           if (this.$.expando.icon === 'expand-less') {
@@ -52,13 +47,6 @@
             this.$.expando.icon = 'expand-less';
           }
           this.$.collapse.toggle();
-        },
-        addInput: function() {
-          const ia = document.createElement('input-add');
-          this.$.inputs.appendChild(ia);
-        },
-        isEarlier: function(a, b) {
-          return b.timestamp - a.timestamp;
         }
       });
     })();

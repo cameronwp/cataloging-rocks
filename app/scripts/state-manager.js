@@ -39,7 +39,7 @@ function StateManager() {
       nconf.get('dimensions').push({
         name: dimension.name,
         categories: dimension.categories || [],
-        id: Math.floor(Math.random() * Math.pow(10, 10))
+        id: Math.floor(Math.random() * Math.pow(10, 16))
       });
     } else {
       nconf.get('dimensions')[foundIndex] = {
@@ -48,7 +48,7 @@ function StateManager() {
         id: dimension.id
       };
     }
-      nconf.save();
+    nconf.save();
   };
 
   this.removeDimension = dimension => {
@@ -70,7 +70,7 @@ function StateManager() {
       if (categoryIndex === -1) {
         dimension.categories.push({
           name: category.name,
-          id: Math.floor(Math.random() * Math.pow(10, 10))
+          id: Math.floor(Math.random() * Math.pow(10, 16))
         });
       } else {
         dimension.categories[categoryIndex] = category;
@@ -92,14 +92,26 @@ function StateManager() {
 
   this.getInputs = () => nconf.get('inputs');
 
-  this.saveInput = input => {
-    
-  };
+  function findInputIndex(input) {
+    if (!input) { throw new TypeError(); }
+    const isMatch = self.getDimensions().findIndex(d => d.timestamp === input.timestamp);
+    return isMatch;
+  }
 
   this.saveInput = input => {
-    // grab all the categories from the inputs
-    // turn it into an object
-    this.getInputs().push(input);
+    if (!input.timestamp) { input.timestamp = Date.now(); }
+    const inputIndex = findInputIndex(input);
+
+    if (inputIndex === -1) {
+      const i = {
+        timestamp: input.timestamp
+      };
+      i[input.property] = input.value;
+      nconf.get('inputs').push(i);
+    } else {
+      nconf.get('inputs')[inputIndex][input.property] = input.value;
+    }
+    nconf.save();
   };
 
   this.generateCSV = () => {
