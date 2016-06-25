@@ -11,9 +11,20 @@
       span {
         @apply(--paper-font-body1);
       }
+
+      paper-icon-button {
+        display: inline-block;
+        height: 32px;
+      }
+      #dropdowns {
+        display: inline-block;
+      }
     </style>
 
-    <div id="dropdowns"></div>
+    <div id="content">
+      <paper-icon-button id="remove-input" icon="delete" name="delete input" on-click="removeInput"></paper-icon-button>
+      <div id="dropdowns"></div>
+    </div>
   </template>
 
   <script>
@@ -40,6 +51,11 @@
           id.inputId = this.inputId;
           id.dimensionId = d.id;
           this.$.dropdowns.appendChild(id);
+        },
+        removeInput: function() {
+          const self = this;
+          stateManager.delete('inputs', this.inputId);
+          this.$.content.style.display = 'none';
         }
       });
     })();
