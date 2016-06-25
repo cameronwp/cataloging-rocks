@@ -1,0 +1,41 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="editor-actions">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <div class="icons">
+      <paper-icon-button icon="folder-open" title="load" class="load"></paper-icon-button>
+      <paper-icon-button icon="save" title="save" class="export"></paper-icon-button>
+      <paper-icon-button icon="refresh" title="refresh" class="export" on-click="refresh"></paper-icon-button>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'editor-actions',
+
+        properties: {
+
+        },
+        ready: function() {
+        },
+        refresh: function() {
+          const electron = require('electron').remote;
+          const app = electron.app;
+          app.relaunch();
+          app.quit();
+          app.exit();
+        }
+      });
+    })();
+  </script>
+</dom-module>

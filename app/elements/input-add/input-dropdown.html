@@ -23,7 +23,7 @@
     </style>
 
     <paper-dropdown-menu label={{name}}>
-      <paper-listbox class="dropdown-content" on-iron-select="save">
+      <paper-listbox class="dropdown-content" on-iron-select="save" selected$="{{selected}}">
         <template is="dom-repeat" items={{categories}}>
           <paper-item>{{item.name}}</paper-item>
         </template>
@@ -51,14 +51,21 @@
           timestamp: {
             type: Number,
             value: 0
+          },
+          selected: {
+            type: Number,
+            notify: true,
+            value: 0
           }
         },
 
         attached: function() {
-          this.updateDimensions();
-          if (!this.name) {
-            console.log(this.dimensions[this.dimensions.length - 1]);
-          }
+          // this.updateDimensions();
+          // if (!this.name) {
+          //   console.log(this.dimensions[this.dimensions.length - 1]);
+          // }
+          // this.selected =
+          // console.log(this);
         },
         save: function(e) {
           let timestamp = this.timestamp;

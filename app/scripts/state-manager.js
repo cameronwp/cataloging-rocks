@@ -64,7 +64,7 @@ function StateManager() {
 
     if (dimensionIndex > -1) {
       const dimension = nconf.get('dimensions')[dimensionIndex];
-      
+
       const categoryIndex = dimension.categories.findIndex(c => +c.id === +category.id);
 
       if (categoryIndex === -1) {
@@ -94,13 +94,16 @@ function StateManager() {
 
   function findInputIndex(input) {
     if (!input) { throw new TypeError(); }
-    const isMatch = self.getDimensions().findIndex(d => d.timestamp === input.timestamp);
-    return isMatch;
+    const inputIndex = self.getInputs().findIndex(d => +d.timestamp === +input.timestamp);
+    return inputIndex;
   }
 
   this.saveInput = input => {
+    console.log(input);
     if (!input.timestamp) { input.timestamp = Date.now(); }
     const inputIndex = findInputIndex(input);
+
+    console.log(inputIndex);
 
     if (inputIndex === -1) {
       const i = {
