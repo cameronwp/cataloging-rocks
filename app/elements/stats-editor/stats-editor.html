@@ -54,15 +54,6 @@
           this.$.collapse.toggle();
         },
         generateStats: function() {
-          const stats = [];
-
-          // iterate through every input
-          // generate matches by:
-          //   * loop over inputs and compare dimensions
-          //   * if the first dimension matches, compare the next dimension. continue
-          //   * if no other inputs have same dimension, push a new object. include object.matches
-          //   * if there is a match, increment object.matches
-
           /*
           Dimension | Dimension | Matches
           category  | category  |    #
@@ -77,8 +68,6 @@
             delete cleanInput.id;
             return cleanInput;
           });
-
-          console.log(paredInputs);
 
           const toDelete = [];
 
@@ -109,9 +98,7 @@
             return b.matchCount - a.matchCount;
           });
 
-          console.log(paredInputs);
-
-          this.set('stats', stats);
+          this.set('stats', paredInputs);
         }
       });
 
