@@ -17,12 +17,12 @@
         padding: 8px 16px 16px 16px;
       }
     </style>
-    
+
     <paper-icon-button icon="expand-less" id="expando" on-click="toggle"></paper-icon-button>
     <span>Stats Editor</span>
     <iron-collapse id="collapse" opened="true">
       <div class="content">
-        suuuuuup
+        <stats-table stat-data="{{stats}}"></stats-table>
       </div>
     </iron-collapse>
   </template>
@@ -33,9 +33,13 @@
 
       Polymer({
         is: 'stats-editor',
+        behaviors: [Inputs],
 
         properties: {
-
+          stats: {
+            type: Object,
+            notify: true
+          }
         },
         ready: function() {
           this.toggle();
@@ -44,11 +48,221 @@
           if (this.$.expando.icon === 'expand-less') {
             this.$.expando.icon = 'expand-more';
           } else if (this.$.expando.icon === 'expand-more') {
+            this.generateStats();
             this.$.expando.icon = 'expand-less';
           }
           this.$.collapse.toggle();
+        },
+        generateStats: function() {
+          const stats = [];
+
+          // iterate through every input
+          // generate matches by:
+          //   * loop over inputs and compare dimensions
+          //   * if the first dimension matches, compare the next dimension. continue
+          //   * if no other inputs have same dimension, push a new object. include object.matches
+          //   * if there is a match, increment object.matches
+
+          /*
+          Dimension | Dimension | Matches
+          category  | category  |    #
+
+           */
+
+          this.updateInputs();
+
+          const paredInputs = this.inputs.map(i => {
+            let cleanInput = clone(i);
+            cleanInput.matchCount = 1;
+            delete cleanInput.id;
+            return cleanInput;
+          });
+
+          console.log(paredInputs);
+
+          const toDelete = [];
+
+          paredInputs.forEach((input, index, arr) => {
+            // skip if already matched
+            if (toDelete.indexOf(index) > -1) { return; }
+            let matches = arr.reduce((prev, curr, subindex) => {
+              let ret = 0;
+              // skip if the same
+              if (index === subindex) { return ret; }
+              // make the comparison
+              let isMatch = deepCompare(input, curr);
+              if (isMatch) {
+                // don't compare against this one later
+                toDelete.push(subindex);
+                // add one to the matchCount
+                ret = 1;
+              }
+              return ret;
+            }, 0);
+            input.matchCount = input.matchCount + matches;
+          });
+
+          // delete the dupes
+          toDelete.forEach(index => delete paredInputs[index]);
+
+          paredInputs.sort((a, b) => {
+            return b.matchCount - a.matchCount;
+          });
+
+          console.log(paredInputs);
+
+          this.set('stats', stats);
         }
       });
+
+      function objectLoop(object, callback) {
+        for (var key in object) {
+          if (object.hasOwnProperty(key)) {
+            callback(key, object[key]);
+          }
+        }
+      }
+
+      function deepCompare() {
+        var i, l, leftChain, rightChain;
+
+        function compare2Objects (x, y) {
+          var p;
+
+          // remember that NaN === NaN returns false
+          // and isNaN(undefined) returns true
+          if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') {
+            return true;
+          }
+
+          // Compare primitives and functions.
+          // Check if both arguments link to the same object.
+          // Especially useful on step when comparing prototypes
+          if (x === y) {
+            return true;
+          }
+
+          // Works in case when functions are created in constructor.
+          // Comparing dates is a common scenario. Another built-ins?
+          // We can even handle functions passed across iframes
+          if ((typeof x === 'function' && typeof y === 'function') ||
+            (x instanceof Date && y instanceof Date) ||
+            (x instanceof RegExp && y instanceof RegExp) ||
+            (x instanceof String && y instanceof String) ||
+            (x instanceof Number && y instanceof Number)) {
+              return x.toString() === y.toString();
+          }
+
+          // At last checking prototypes as good a we can
+          if (!(x instanceof Object && y instanceof Object)) {
+            return false;
+          }
+
+          if (x.isPrototypeOf(y) || y.isPrototypeOf(x)) {
+            return false;
+          }
+
+          if (x.constructor !== y.constructor) {
+            return false;
+          }
+
+          if (x.prototype !== y.prototype) {
+            return false;
+          }
+
+          // Check for infinitive linking loops
+          if (leftChain.indexOf(x) > -1 || rightChain.indexOf(y) > -1) {
+             return false;
+          }
+
+          // Quick checking of one object beeing a subset of another.
+          // todo: cache the structure of arguments[0] for performance
+          for (p in y) {
+            if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+              return false;
+            }
+            else if (typeof y[p] !== typeof x[p]) {
+              return false;
+            }
+          }
+
+          for (p in x) {
+            if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+              return false;
+            }
+            else if (typeof y[p] !== typeof x[p]) {
+              return false;
+            }
+
+            switch (typeof (x[p])) {
+              case 'object':
+              case 'function':
+                leftChain.push(x);
+                rightChain.push(y);
+
+                if (!compare2Objects (x[p], y[p])) {
+                  return false;
+                }
+
+                leftChain.pop();
+                rightChain.pop();
+                break;
+
+              default:
+                if (x[p] !== y[p]) {
+                  return false;
+                }
+                break;
+            }
+          }
+
+          return true;
+        }
+
+        if (arguments.length < 1) {
+          return true; //Die silently? Don't know how to handle such case, please help...
+          // throw "Need two or more arguments to compare";
+        }
+
+        for (i = 1, l = arguments.length; i < l; i++) {
+
+          leftChain = []; //Todo: this can be cached
+          rightChain = [];
+
+          if (!compare2Objects(arguments[0], arguments[i])) {
+            return false;
+          }
+        }
+        return true;
+      }
+      function clone(obj) {
+        const self = this;
+        // http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+        var copy;
+
+        // Handle the 3 simple types, and null or undefined
+        if (null === obj || 'object' !== typeof obj) { return obj; }
+
+        // Handle Array
+        if (obj instanceof Array) {
+          copy = [];
+          for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = self.clone(obj[i]);
+          }
+          return copy;
+        }
+
+        // Handle Object
+        if (obj instanceof Object) {
+          copy = {};
+          for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) { copy[attr] = clone(obj[attr]); }
+          }
+          return copy;
+        }
+
+        throw new Error('Unable to copy object! Its type isn\'t supported.');
+      }
     })();
   </script>
 </dom-module>

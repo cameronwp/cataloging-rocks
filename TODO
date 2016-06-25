@@ -1,2 +1,2 @@
-* refresh button - app.relaunch (https://github.com/electron/electron/pull/5837)
 * move save, load, refresh buttons into the File menu
+* might need to toggle init boolean to prevent too much firing of stateManager.getAll
