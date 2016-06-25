@@ -1,91 +1,97 @@
 const remote = require('electron').remote;
 const app = remote.app;
-const fs = require('fs');
 
-var tempFile = null;
-if (!process.env.testing) {
-  tempFile = app.getPath('appData') + '/temp.json';
-} else {
-  tempFile = app.getPath('temp') + '/temp.json';
-}
+const tempFile = app.getPath('appData') + '/temp.json';
 
 const nconf = require('nconf').file({file: tempFile});
 
-nconf.load();
-if (!nconf.get('dimensions')) { nconf.set('dimensions', {}); }
-if (!nconf.get('inputs')) { nconf.set('inputs', {}); }
-
 function StateManager() {
   const self = this;
-
-  this.getDimensions = () => {
-    return nconf.get('dimensions');
-  };
-
-  this.getDimension = dimension => this.getDimensions()[dimension.id];
-
-  this.saveDimension = dimension => {
-    if (dimension.id === '') {
-      dimension.id = Math.floor(Math.random() * Math.pow(10, 16));
-    }
-    nconf.get('dimensions')[dimension.id] = {
-      name: dimension.name,
-      categories: dimension.categories || []
-    };
-    nconf.save();
-  };
-
-  this.removeDimension = dimension => {
-    delete nconf.get('dimensions')[dimension.id];
-    nconf.save();
-  };
-
-  this.saveCategory = (dimensionId, category) => {
-    const dbDimension = this.getDimension(dimensionId);
-
-    const categoryIndex = dbDimension.categories.findIndex(c => +c.id === +category.id);
-
-    if (categoryIndex === -1) {
-      dbDimension.categories.push({
-        name: category.name,
-        id: Math.floor(Math.random() * Math.pow(10, 16))
-      });
-    } else {
-      dbDimension.categories[categoryIndex] = category;
-    }
-    nconf.save();
-  };
-
-  this.removeCategory = (dimension, category) => {
-    const dbDimension = nconf.get('dimensions')[dimension.id];
-    const categoryIndex = dbDimension.categories.findIndex(c => +c.id === +category.id);
-    const removed = dbDimension.categories.splice(categoryIndex, 1);
-    nconf.save();
-  };
-
-  this.getInputs = () => nconf.get('inputs');
-
-  this.saveInput = input => {
-    const i = {};
-    i[input.property] = input.value;
-    nconf.get('inputs')[input.id] = i;
-    nconf.save();
-  };
-
-  this.removeInput = input => {
-    delete nconf.get('inputs')[input.id];
-    nconf.save();
-  };
-
   this.generateCSV = () => {
     // loop and build!
   };
-
-  this.clear = () => {
-    nconf.set('dimensions', []);
-    nconf.set('inputs', []);
-    nconf.save();
-  };
 };
+
+StateManager.prototype = {
+  init() {
+    const self = this;
+    nconf.load(function() {
+      if (!nconf.get('inputs')) { nconf.set('inputs', {}); }
+      if (!nconf.get('dimensions')) { nconf.set('dimensions', {}); }
+      if (!nconf.get('categories')) { nconf.set('categories', {}); }
+      self.refresh();
+    });
+  },
+  refresh(type) {
+    if (type) {
+      this[type] = nconf.get(type);
+    } else {
+      this.inputs = nconf.get('inputs');
+      this.dimensions = nconf.get('dimensions');
+      this.categories = nconf.get('categories');
+    }
+  },
+  getAll(type) {
+    return this[type];
+  },
+  getById(type, id) {
+    let ret = null;
+    try {
+      ret = this[type][id];
+    } catch (e) {
+      // doesn't exist
+    }
+    return ret;
+  },
+  set(type, id, key, value) {
+    const self = this;
+    return new Promise(function(resolve, reject) {
+      let obj = null;
+      try {
+        obj = getById(type, id);
+      } catch (e) {
+        self[type][id] = {};
+      }
+      self[type][id][key] = value;
+      nconf.set(type, self[type]);
+      nconf.save();
+      self.refresh(type);
+      resolve();
+    });
+  },
+  createInput() {
+    const id = Math.floor(Math.random() * Math.pow(10, 16));
+    const selections = [];
+    this.dimensions.forEach(d => selections.push({dimensionId: d.id, selected: -1}));
+    return {
+      id: id,
+      selections: selections
+    }
+  },
+  createDimension(name) {
+    const id = Math.floor(Math.random() * Math.pow(10, 16));
+    return {
+      id: id,
+      name: name,
+      categories: []
+    };
+  },
+  createCategory(name, dimensionId) {
+    const id = Math.floor(Math.random() * Math.pow(10, 16));
+    return {
+      id: id,
+      name: name,
+      parent: dimensionId
+    }
+  },
+  clear() {
+    const self = this;
+    nconf.set('inputs', {});
+    nconf.set('dimensions', {});
+    nconf.set('categories', {});
+    nconf.save();
+    self.refresh();
+  }
+}
 
 module.exports = StateManager;

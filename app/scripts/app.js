@@ -30,6 +30,3 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   });
 
 })(document);
-
-const StateManager = require('./scripts/state-manager');
-const stateManager = new StateManager();

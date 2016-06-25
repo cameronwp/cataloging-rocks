@@ -26,11 +26,7 @@
     <span>Dimension Editor</span>
     <iron-collapse id="collapse" opened="true">
       <div class="content">
-        <div id="dimensions">
-          <template is="dom-repeat" items={{dimensions}}>
-             <dimension-add name="{{item.name}}" categories={{item.categories}} id={{item.id}}></dimension-add>
-          </template>
-        </div>
+        <div id="dimensions"></div>
         <paper-icon-button icon="add" id="add-dimension" on-click="addDimension"></paper-icon-button><span>New Dimension</span>
       </div>
     </iron-collapse>
@@ -41,14 +37,17 @@
       'use strict';
 
       Polymer({
+        // might need a refresh option
         is: 'dimension-editor',
         behaviors: [Dimensions],
 
         properties: {
-          
+
         },
         ready: function() {
+          const self = this;
           this.toggle();
+          this.dimensions.forEach(d => self.addDimension(d));
         },
         toggle: function() {
           if (this.$.expando.icon === 'expand-less') {
@@ -59,12 +58,13 @@
           this.$.collapse.toggle();
         },
         addDimension: function(dimension) {
-          const ad = document.createElement('dimension-add');
+          const da = document.createElement('dimension-add');
           if (dimension) {
-            ad.name = dimension.name;
-            ad.categories = dimension.categories;
+            da.name = dimension.name;
+            da.id = dimension.id;
+            da.categories = dimension.categories;
           }
-          this.$.dimensions.appendChild(ad);
+          this.$.dimensions.appendChild(da);
         }
       });
     })();

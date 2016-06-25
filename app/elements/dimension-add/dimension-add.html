@@ -68,6 +68,7 @@
           }
         },
         attached: function() {
+          this.set('name', this.name);
         },
         addCategory: function(category) {
           const ca = document.createElement('category-add');
@@ -82,13 +83,18 @@
         },
         save: function(e) {
           const self = this;
-          const dimension = e.target.value;
-          stateManager.saveDimension({
-            name: dimension,
-            categories: self.categories,
-            id: self.id
+          const name = e.target.value;
+          let model = stateManager.getById('dimension', this.id);
+
+          if (!model) {
+            model = stateManager.createDimension();
+          }
+
+          stateManager.set('dimensions', model.id, 'name', name)
+          .then(() => {
+            self.set('name', name);
           });
-          this.set('name', dimension);
+
           this.updateDimensions();
         },
         removeDimension: function() {

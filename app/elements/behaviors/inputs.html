@@ -3,7 +3,10 @@
     properties: {
       inputs: {
         type: Array,
-        notify: true
+        notify: true,
+        value: function() {
+          return [];
+        }
       },
       rawInputs: {
         type: Object
@@ -12,17 +15,12 @@
     ready: function() {
       this.updateInputs();
     },
-    getInput: function(id) {
-      if (id === undefined) {
-        return null;
-      }
-      return this.rawInputs[id];
-    },
     updateInputs: function() {
-      this.rawInputs = stateManager.getInputs();
-      for (let i in this.rawInputs) {
-        if (this.rawInputs.hasOwnProperty(i)) {
-          this.inputs.push(i);
+      const self = this;
+      this.rawInputs = stateManager.getAll('inputs');
+      for (let i in self.rawInputs) {
+        if (self.rawInputs.hasOwnProperty(i)) {
+          self.inputs.push(i);
         }
       }
     }

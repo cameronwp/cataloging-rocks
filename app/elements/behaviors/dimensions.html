@@ -3,7 +3,10 @@
     properties: {
       dimensions: {
         type: Array,
-        notify: true
+        notify: true,
+        value: function() {
+          return [];
+        }
       },
       rawDimensions: {
         type: Object
@@ -12,19 +15,18 @@
     ready: function() {
       this.updateDimensions();
     },
-    getDimension: function(id) {
-      if (id === undefined) {
-        return null;
-      }
-      return this.rawDimensions[id];
-    },
     updateDimensions: function() {
-      this.rawDimensions = stateManager.getInputs();
+      const self = this;
+      this.rawDimensions = stateManager.getAll('dimensions');
       for (let i in this.rawDimensions) {
-        if (this.rawDimensions.hasOwnProperty(i)) {
-          this.dimensions.push(i);
+        if (self.rawDimensions.hasOwnProperty(i)) {
+          self.dimensions.push({
+            id: i,
+            name: this.rawDimensions[i].name
+          });
         }
       }
+      // also update inputs?
     }
   }
 </script>
