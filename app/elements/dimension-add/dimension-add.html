@@ -99,11 +99,7 @@
         },
         removeDimension: function() {
           const self = this;
-          stateManager.removeDimension({
-            name: self.name,
-            id: self.id,
-            categories: self.categories
-          });
+          stateManager.delete('dimensions', this.id);
           this.$.content.style.display = 'none';
           this.$.add.style.display = 'none';
           this.$.categories.style.display = 'none';

@@ -78,11 +78,16 @@
 
         },
         removeCategory: function() {
-          stateManager.removeCategory(this.dimension, {
-            name: this.name,
-            id: this.id,
-            categories: this.categories
+          const self = this;
+          const dimension = stateManager.getById('dimensions', +this.dimension);
+          stateManager.delete('categories', this.id)
+          .then(() => {
+            let categories = dimension.categories;
+            let index = categories.findIndex(c => c.id === this.id);
+            categories.splice(index, 1);
+            return stateManager.set('dimensions', +self.dimension, 'categories', categories);
           });
+
           this.$.content.style.display = 'none';
           this.updateDimensions();
         }

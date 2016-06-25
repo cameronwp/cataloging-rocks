@@ -53,7 +53,7 @@ StateManager.prototype = {
   },
   set(type, id, key, value) {
     const self = this;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
       let obj = null;
       try {
         obj = self.getById(type, id);
@@ -74,12 +74,25 @@ StateManager.prototype = {
       });
     });
   },
+  delete(type, id, key) {
+    const self = this;
+    return new Promise(function(resolve) {
+      if (!key) {
+        delete self[type][id];
+      } else {
+        delete self[type][id][key];
+      }
+
+      nconf.set(type, self[type]);
+      nconf.save(function() {
+        self.refresh();
+        resolve();
+      });
+    });
+  },
   createInput() {
     const id = Date.now();
     const selections = {};
-    // objectLoop(this.dimensions, (key, value) => {
-    //   selections[key] = categoryId;
-    // });
     return {
       id: id,
       selections: selections
