@@ -1,7 +1,7 @@
 {
-  "name": "Data-Input",
+  "name": "Cataloging-Rocks",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Cataloging Rocks",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",

@@ -106,8 +106,7 @@ function StateManager() {
       const i = {
         timestamp: input.timestamp
       };
-      i[input.property] = input.value;
-      console.log(i);
+      i[input.property] = input.id;
       nconf.get('inputs').push(i);
     } else {
       nconf.get('inputs')[inputIndex][input.property] = input.value;

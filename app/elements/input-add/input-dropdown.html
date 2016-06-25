@@ -54,8 +54,10 @@
           },
           selected: {
             type: Number,
-            notify: true,
-            value: 0
+            notify: true
+          },
+          selectedId: {
+
           }
         },
 
@@ -65,11 +67,13 @@
         save: function(e) {
           const timestamp = this.timestamp;
           const value = this.categories[e.target.selected].name;
+          const selectedId = this.categories[e.target.selected].id;
+          this.selectedId = selectedId;
 
           stateManager.saveInput({
             timestamp: timestamp,
             property: this.name,
-            value: value
+            id: selectedId
           });
           this.updateInputs();
         }
