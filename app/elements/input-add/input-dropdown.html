@@ -48,32 +48,32 @@
             type: Array,
             notify: true
           },
-          timestamp: {
-            type: Number,
-            value: 0
+          id: {
+            type: Number
           },
           selected: {
             type: Number,
             notify: true
           },
-          selectedId: {
-
+          categoryId: {
+            type: Number,
+            notify: true
           }
         },
 
         attached: function() {
-          console.log(this.inputs);
+          console.log(this.getInput(id));
         },
         save: function(e) {
-          const timestamp = this.timestamp;
+          const timestamp = this.id;
           const value = this.categories[e.target.selected].name;
-          const selectedId = this.categories[e.target.selected].id;
-          this.selectedId = selectedId;
+          const categoryId = this.categories[e.target.selected].id;
+          this.categoryId = categoryId;
 
           stateManager.saveInput({
-            timestamp: timestamp,
+            id: timestamp,
             property: this.name,
-            id: selectedId
+            categoryId: categoryId
           });
           this.updateInputs();
         }

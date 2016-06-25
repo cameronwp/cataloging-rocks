@@ -25,7 +25,7 @@
         height: 32px;
       }
     </style>
-    
+
     <div id="content">
       <paper-icon-button id="remove-category" icon="delete" name="delete category" on-click="removeCategory"></paper-icon-button>
       <paper-input class="new-category" label="New category" on-change="save" value={{name}}></paper-input>
@@ -57,6 +57,7 @@
         save: function(e) {
           const self = this;
           const category = e.target.value;
+          console.log(self.dimension);
           stateManager.saveCategory(self.dimension, {
             name: self.name,
             id: self.id || 0

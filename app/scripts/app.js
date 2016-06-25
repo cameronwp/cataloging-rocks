@@ -33,5 +33,3 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 const StateManager = require('./scripts/state-manager');
 const stateManager = new StateManager();
-
-// stateManager.clear();

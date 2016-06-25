@@ -30,7 +30,7 @@
         display: inline-block;
       }
     </style>
-    
+
     <div id="content" class="dimension">
       <paper-icon-button id="remove-dimension" icon="delete" name="delete dimension" on-click="removeDimension"></paper-icon-button>
       <paper-input id="newDimension" class="new-dimension" label="Dimension Name" on-change="save" value="{{name}}"></paper-input>
@@ -39,7 +39,7 @@
     <paper-icon-button id="add" icon="add" class="add-category" on-click="addCategory"></paper-icon-button>
     <div id="categories">
       <template is="dom-repeat" items={{categories}}>
-        <category-add name="{{item.name}}" id={{item.id}} dimension={{name}}></category-add>
+        <category-add name="{{item.name}}" id={{item.id}} dimension={{id}}></category-add>
       </template>
     </div>
   </template>
@@ -67,7 +67,8 @@
             value: 0
           }
         },
-        attached: function() {},
+        attached: function() {
+        },
         addCategory: function(category) {
           const ca = document.createElement('category-add');
           ca.dimension = this.name;

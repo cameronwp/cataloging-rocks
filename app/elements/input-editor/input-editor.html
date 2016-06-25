@@ -23,7 +23,7 @@
       <div class="content">
         <div id="inputs">
           <template is="dom-repeat" items="{{inputs}}">
-            <input-add timestamp="{{item.timestamp}}" sort="isEarlier"></input-add>
+            <input-add id="{{item.id}}" sort="isEarlier"></input-add>
           </template>
         </div>
         <paper-icon-button icon="add" id="add-input" on-click="addInput"></paper-icon-button><span>New Input</span>
@@ -58,7 +58,7 @@
           this.$.inputs.appendChild(ia);
         },
         isEarlier: function(a, b) {
-          return b.timestamp - a.timestamp;
+          return b.id - a.id;
         }
       });
     })();

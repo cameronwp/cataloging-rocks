@@ -4,13 +4,27 @@
       dimensions: {
         type: Array,
         notify: true
+      },
+      rawDimensions: {
+        type: Object
       }
     },
     ready: function() {
       this.updateDimensions();
     },
+    getDimension: function(id) {
+      if (id === undefined) {
+        return null;
+      }
+      return this.rawDimensions[id];
+    },
     updateDimensions: function() {
-      this.dimensions = stateManager.getDimensions();
+      this.rawDimensions = stateManager.getInputs();
+      for (let i in this.rawDimensions) {
+        if (this.rawDimensions.hasOwnProperty(i)) {
+          this.dimensions.push(i);
+        }
+      }
     }
   }
 </script>
