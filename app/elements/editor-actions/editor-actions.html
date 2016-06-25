@@ -13,6 +13,7 @@
       <paper-icon-button icon="folder-open" title="load" class="load"></paper-icon-button>
       <paper-icon-button icon="save" title="save" class="export"></paper-icon-button>
       <paper-icon-button icon="refresh" title="refresh" class="export" on-click="refresh"></paper-icon-button>
+      <paper-icon-button icon="clear" title="clear" class="export" on-click="clear"></paper-icon-button>
     </div>
   </template>
 
@@ -28,9 +29,23 @@
         },
         ready: function() {
         },
+        clear: function() {
+          const self = this;
+          const {dialog} = require('electron').remote;
+          dialog.showMessageBox({
+            type: 'warning',
+            message: 'You are about to erase all dimensions, categories and inputs. Are you sure you want to continue?',
+            cancelId: -1,
+            buttons: ['Cancel', 'Erase']
+          }, e => {
+            if (e > 0) {
+              stateManager.clear();
+              self.refresh();
+            }
+          });
+        },
         refresh: function() {
-          const electron = require('electron').remote;
-          const app = electron.app;
+          const {app} = require('electron').remote;
           app.relaunch();
           app.quit();
           app.exit();

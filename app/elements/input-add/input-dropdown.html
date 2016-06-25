@@ -60,20 +60,16 @@
         },
 
         attached: function() {
-          // this.updateDimensions();
-          // if (!this.name) {
-          //   console.log(this.dimensions[this.dimensions.length - 1]);
-          // }
-          // this.selected =
-          // console.log(this);
+          console.log(this.inputs);
         },
         save: function(e) {
-          let timestamp = this.timestamp;
+          const timestamp = this.timestamp;
+          const value = this.categories[e.target.selected].name;
 
           stateManager.saveInput({
             timestamp: timestamp,
             property: this.name,
-            value: this.categories[e.target.selected]
+            value: value
           });
           this.updateInputs();
         }

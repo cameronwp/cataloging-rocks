@@ -99,17 +99,15 @@ function StateManager() {
   }
 
   this.saveInput = input => {
-    console.log(input);
     if (!input.timestamp) { input.timestamp = Date.now(); }
     const inputIndex = findInputIndex(input);
-
-    console.log(inputIndex);
 
     if (inputIndex === -1) {
       const i = {
         timestamp: input.timestamp
       };
       i[input.property] = input.value;
+      console.log(i);
       nconf.get('inputs').push(i);
     } else {
       nconf.get('inputs')[inputIndex][input.property] = input.value;
