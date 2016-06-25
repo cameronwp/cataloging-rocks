@@ -62,7 +62,7 @@
           if (dimension) {
             da.name = dimension.name;
             da.id = dimension.id;
-            da.categories = dimension.categories;
+            da.categories = dimension.categories || [];
           }
           this.$.dimensions.appendChild(da);
         }

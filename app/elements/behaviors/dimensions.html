@@ -17,12 +17,14 @@
     },
     updateDimensions: function() {
       const self = this;
+      self.dimensions = [];
       this.rawDimensions = stateManager.getAll('dimensions');
       for (let i in this.rawDimensions) {
         if (self.rawDimensions.hasOwnProperty(i)) {
           self.dimensions.push({
             id: i,
-            name: this.rawDimensions[i].name
+            name: this.rawDimensions[i].name,
+            categories: this.rawDimensions[i].categories
           });
         }
       }

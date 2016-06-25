@@ -37,11 +37,7 @@
       </span>
     </div>
     <paper-icon-button id="add" icon="add" class="add-category" on-click="addCategory"></paper-icon-button>
-    <div id="categories">
-      <template is="dom-repeat" items={{categories}}>
-        <category-add name="{{item.name}}" id={{item.id}} dimension={{id}}></category-add>
-      </template>
-    </div>
+    <div id="categories"></div>
   </template>
 
   <script>
@@ -60,7 +56,10 @@
           },
           categories: {
             type: Array,
-            notify: true
+            notify: true,
+            value: function() {
+              return [];
+            }
           },
           id: {
             type: Number,
@@ -68,31 +67,32 @@
           }
         },
         attached: function() {
-          this.set('name', this.name);
+          this.categories.forEach(c => this.addCategory(c));
         },
         addCategory: function(category) {
           const ca = document.createElement('category-add');
-          ca.dimension = this.name;
+          ca.dimension = this.id;
+          ca.id = category.id;
           if (typeof category === 'string') {
             ca.name = category;
-          } else if (typeof category === 'object') {
+          } else {
             ca.name = category.name;
-            ca.id = category.id;
           }
           this.$.categories.appendChild(ca);
         },
         save: function(e) {
           const self = this;
           const name = e.target.value;
-          let model = stateManager.getById('dimension', this.id);
+          let dimension = stateManager.getById('dimensions', this.id);
 
-          if (!model) {
-            model = stateManager.createDimension();
+          if (!dimension) {
+            dimension = stateManager.createDimension(name);
           }
 
-          stateManager.set('dimensions', model.id, 'name', name)
+          stateManager.set('dimensions', dimension.id, dimension)
           .then(() => {
             self.set('name', name);
+            self.set('id', dimension.id);
           });
 
           this.updateDimensions();

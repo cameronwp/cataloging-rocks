@@ -48,19 +48,26 @@ StateManager.prototype = {
     return new Promise(function(resolve, reject) {
       let obj = null;
       try {
-        obj = getById(type, id);
+        obj = self.getById(type, id);
       } catch (e) {
         self[type][id] = {};
       }
-      self[type][id][key] = value;
+
+      if (typeof value === 'undefined') {
+        self[type][id] = key;
+      } else {
+        self[type][id][key] = value;
+      }
+
       nconf.set(type, self[type]);
-      nconf.save();
-      self.refresh(type);
-      resolve();
+      nconf.save(function() {
+        self.refresh();
+        resolve();
+      });
     });
   },
   createInput() {
-    const id = Math.floor(Math.random() * Math.pow(10, 16));
+    const id = Date.now();
     const selections = [];
     this.dimensions.forEach(d => selections.push({dimensionId: d.id, selected: -1}));
     return {
@@ -69,7 +76,7 @@ StateManager.prototype = {
     }
   },
   createDimension(name) {
-    const id = Math.floor(Math.random() * Math.pow(10, 16));
+    const id = Date.now();
     return {
       id: id,
       name: name,
@@ -77,7 +84,7 @@ StateManager.prototype = {
     };
   },
   createCategory(name, dimensionId) {
-    const id = Math.floor(Math.random() * Math.pow(10, 16));
+    const id = Date.now();
     return {
       id: id,
       name: name,

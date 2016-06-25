@@ -42,7 +42,7 @@
 
         properties: {
           dimension: {
-            type: String
+            type: Number
           },
           name: {
             type: String,
@@ -56,14 +56,28 @@
         ready: function() {},
         save: function(e) {
           const self = this;
-          const category = e.target.value;
-          console.log(self.dimension);
-          stateManager.saveCategory(self.dimension, {
-            name: self.name,
-            id: self.id || 0
+          const name = e.target.value;
+          const dimension = stateManager.getById('dimensions', +this.dimension);
+          let category = stateManager.getById('categories', this.id);
+
+          if (!category) {
+            category = stateManager.createCategory(name, +this.dimension);
+          }
+
+          let categories = dimension.categories;
+          categories.push(name);
+
+          console.log(categories);
+
+          stateManager.set('dimensions', +self.dimension, 'categories', categories)
+          .then(() => {
+            return stateManager.set('categories', category.id, category);
+          })
+          .then(() => {
+            self.set('name', name);
+            this.updateDimensions();
           });
-          this.set('name', category);
-          this.updateDimensions();
+
         },
         removeCategory: function() {
           stateManager.removeCategory(this.dimension, {
