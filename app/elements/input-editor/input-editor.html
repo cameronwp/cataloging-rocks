@@ -21,11 +21,7 @@
     <span>Input Editor</span>
     <iron-collapse id="collapse" opened="true">
       <div class="content">
-        <div id="inputs">
-          <template is="dom-repeat" items="{{inputs}}">
-            <input-add input-id="{{item.id}}" sort="isEarlier"></input-add>
-          </template>
-        </div>
+        <div id="inputs"></div>
         <paper-icon-button icon="add" id="add-input" on-click="addInput"></paper-icon-button><span>New Input</span>
       </div>
     </iron-collapse>
@@ -42,8 +38,8 @@
         properties: {
 
         },
-        ready: function() {
-          console.log(this.inputs);
+        attached: function() {
+          this.inputs.forEach(i => this.addInput(i));
         },
         toggle: function() {
           if (this.$.expando.icon === 'expand-less') {
@@ -53,8 +49,9 @@
           }
           this.$.collapse.toggle();
         },
-        addInput: function() {
+        addInput: function(i) {
           const ia = document.createElement('input-add');
+          ia.inputId = i.id;
           this.$.inputs.appendChild(ia);
         },
         isEarlier: function(a, b) {

@@ -65,9 +65,7 @@
           }
 
           let categories = dimension.categories;
-          categories.push({name: name, id: this.id});
-
-          console.log(categories);
+          categories.push({name: name, id: category.id});
 
           stateManager.set('dimensions', +self.dimension, 'categories', categories)
           .then(() => {

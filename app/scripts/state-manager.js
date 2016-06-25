@@ -78,7 +78,7 @@ StateManager.prototype = {
     const id = Date.now();
     const selections = {};
     objectLoop(this.dimensions, (key, value) => {
-      selections[key] = -1;
+      selections[key] = categoryId;
     });
     return {
       id: id,

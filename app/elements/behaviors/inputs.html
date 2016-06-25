@@ -17,13 +17,17 @@
     },
     updateInputs: function() {
       const self = this;
-      this.rawInputs = stateManager.getAll('inputs');
       this.inputs = [];
+      this.rawInputs = stateManager.getAll('inputs');
       for (let i in self.rawInputs) {
         if (self.rawInputs.hasOwnProperty(i)) {
-          self.inputs.push(i);
+          self.inputs.push({
+            id: i,
+            selected: this.rawInputs[i].selections
+          });
         }
       }
+      // console.log(this.inputs);
     }
   };
 </script>

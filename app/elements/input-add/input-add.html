@@ -30,9 +30,8 @@
           }
         },
 
-        ready: function() {
+        attached: function() {
           this.dimensions.forEach(d => this.addDropdown(d));
-          // console.log(this.inputId);
         },
         addDropdown: function(d) {
           const id = document.createElement('input-dropdown');
