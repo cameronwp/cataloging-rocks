@@ -74,12 +74,12 @@ StateManager.prototype = {
       });
     });
   },
-  createInput(dimensionId, categoryId) {
+  createInput() {
     const id = Date.now();
     const selections = {};
-    objectLoop(this.dimensions, (key, value) => {
-      selections[key] = categoryId;
-    });
+    // objectLoop(this.dimensions, (key, value) => {
+    //   selections[key] = categoryId;
+    // });
     return {
       id: id,
       selections: selections

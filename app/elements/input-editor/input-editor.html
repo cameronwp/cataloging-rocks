@@ -51,7 +51,11 @@
         },
         addInput: function(i) {
           const ia = document.createElement('input-add');
-          ia.inputId = i.id;
+          let input = stateManager.getById('inputs', +i.id);
+          if (!input) {
+            input = stateManager.createInput();
+          }
+          ia.inputId = input.id;
           this.$.inputs.appendChild(ia);
         },
         isEarlier: function(a, b) {

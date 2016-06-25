@@ -66,18 +66,13 @@
         attached: function() {
           // figure out which category has been selected and select it
           let selected = null;
-          if (!this.inputId) {
-            return;
+          selected = this.rawInputs[+this.inputId];
+          if (selected) {
+            const selectedIndex = this.categories.findIndex(c => {
+              return selected.selections[this.dimensionId] === c.id;
+            });
+            this.set('selected', selectedIndex);
           }
-          try {
-            selected = this.rawInputs[this.inputId];
-          } catch (e) {
-            // nothing selected
-          }
-          const selectedIndex = this.categories.findIndex(c => {
-            return selected.selections[this.dimensionId] === c.id;
-          });
-          this.set('selected', selectedIndex);
         },
         addItem: function(i) {
           const pi = document.createElement('paper-item');
@@ -90,16 +85,15 @@
           const selectedCategoryId = this.categories[e.target.selected].id;
 
           let input = stateManager.getById('inputs', +this.inputId);
-
-          if (!input) {
-            input = stateManager.createInput(this.dimensionId, selectedCategoryId);
+          if (input) {
+            input.selections[this.dimensionId] = selectedCategoryId;
           } else {
+            input = {id: +this.inputId, selections: {}};
             input.selections[this.dimensionId] = selectedCategoryId;
           }
-          self.set('inputId', input.id);
+
           stateManager.set('inputs', +input.id, input)
           .then(() => {
-            console.log(input);
             self.updateInputs();
           });
         }
