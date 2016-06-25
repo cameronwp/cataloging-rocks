@@ -6,6 +6,7 @@
     <style>
       :host {
         display: inline-block;
+        margin-right: 8px;
       }
 
       span {
@@ -23,9 +24,9 @@
     </style>
 
     <paper-dropdown-menu label={{name}}>
-      <paper-listbox class="dropdown-content" on-iron-select="save" selected$="{{selected}}">
+      <paper-listbox id="list" class="dropdown-content" on-iron-select="save" selected$="{{selected}}">
         <template is="dom-repeat" items={{categories}}>
-          <paper-item>{{item.name}}</paper-item>
+          <paper-item category-id="{{item.id}}">{{item.name}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
@@ -48,7 +49,7 @@
             type: Array,
             notify: true
           },
-          id: {
+          inputId: {
             type: Number
           },
           selected: {
@@ -62,20 +63,42 @@
         },
 
         attached: function() {
-          console.log(this.getInput(id));
+          // figure out which category has been selected and select it
+          let selected = null;
+          try {
+            selected = this.rawInputs[this.inputId];
+          } catch (e) {
+            // nothing selected
+          }
+          console.log(this.categories);
+        },
+        addItem: function(i) {
+          const pi = document.createElement('paper-item');
+          pi.innerText = i;
+          this.$.list.appendChild(pi);
         },
         save: function(e) {
-          const timestamp = this.id;
-          const value = this.categories[e.target.selected].name;
-          const categoryId = this.categories[e.target.selected].id;
-          this.categoryId = categoryId;
+          const self = this;
+          const id = this.inputId;
+          const selectedCategoryName = this.categories[e.target.selected].name;
+          const selectedCategoryId = this.categories[e.target.selected].categoryId;
+          // const categoryId = this.categories[e.target.selected].id;
+          // const categoryId = stateManager.getById('dimensions', this.dimensionId).categories.indexOf(selectedCategory);
+          console.log(selectedCategoryName);
 
-          stateManager.saveInput({
-            id: timestamp,
-            property: this.name,
-            categoryId: categoryId
+          let input = stateManager.getById('inputs', id);
+
+          if (!input) {
+            input = stateManager.createInput(this.dimensionId, this.categoryId);
+          } else {
+            input.selections[this.dimensionId] = selectedCategoryId;
+          }
+          console.log(input);
+          stateManager.set('inputs', id, input)
+          .then(() => {
+            // self.set('selected')
+            this.updateInputs();
           });
-          this.updateInputs();
         }
       });
     })();

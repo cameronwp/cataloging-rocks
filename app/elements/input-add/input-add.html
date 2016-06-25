@@ -13,9 +13,7 @@
       }
     </style>
 
-    <template is="dom-repeat" items="{{dimensions}}">
-      <input-dropdown name="{{item.name}}" categories={{item.categories}} id="{{id}}"></input-dropdown>
-    </template>
+    <div id="dropdowns"></div>
   </template>
 
   <script>
@@ -27,12 +25,22 @@
         behaviors: [Dimensions],
 
         properties: {
-
+          inputId: {
+            type: Number
+          }
         },
 
-        attached: function() {
-          // this.updateDimensions();
-          // console.log(this.dimensions);
+        ready: function() {
+          this.dimensions.forEach(d => this.addDropdown(d));
+          // console.log(this.inputId);
+        },
+        addDropdown: function(d) {
+          const id = document.createElement('input-dropdown');
+          id.name = d.name;
+          id.categories = d.categories;
+          id.inputId = this.inputId;
+          id.dimensionId = d.id;
+          this.$.dropdowns.appendChild(id);
         }
       });
     })();

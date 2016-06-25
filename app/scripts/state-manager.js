@@ -12,6 +12,14 @@ function StateManager() {
   };
 };
 
+function objectLoop(object, callback) {
+  for (var key in object) {
+    if (object.hasOwnProperty(key)) {
+      callback(key, object[key]);
+    }
+  }
+}
+
 StateManager.prototype = {
   init() {
     const self = this;
@@ -66,10 +74,12 @@ StateManager.prototype = {
       });
     });
   },
-  createInput() {
+  createInput(dimensionId, categoryId) {
     const id = Date.now();
-    const selections = [];
-    this.dimensions.forEach(d => selections.push({dimensionId: d.id, selected: -1}));
+    const selections = {};
+    objectLoop(this.dimensions, (key, value) => {
+      selections[key] = -1;
+    });
     return {
       id: id,
       selections: selections

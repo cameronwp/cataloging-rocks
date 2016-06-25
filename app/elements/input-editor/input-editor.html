@@ -23,7 +23,7 @@
       <div class="content">
         <div id="inputs">
           <template is="dom-repeat" items="{{inputs}}">
-            <input-add id="{{item.id}}" sort="isEarlier"></input-add>
+            <input-add input-id="{{item.id}}" sort="isEarlier"></input-add>
           </template>
         </div>
         <paper-icon-button icon="add" id="add-input" on-click="addInput"></paper-icon-button><span>New Input</span>
@@ -43,7 +43,7 @@
 
         },
         ready: function() {
-          // console.log(this.inputs);
+          console.log(this.inputs);
         },
         toggle: function() {
           if (this.$.expando.icon === 'expand-less') {

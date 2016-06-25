@@ -18,6 +18,7 @@
     updateInputs: function() {
       const self = this;
       this.rawInputs = stateManager.getAll('inputs');
+      this.inputs = [];
       for (let i in self.rawInputs) {
         if (self.rawInputs.hasOwnProperty(i)) {
           self.inputs.push(i);
