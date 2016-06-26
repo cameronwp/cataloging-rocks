@@ -38,7 +38,7 @@
 
       Polymer({
         is: 'stats-table',
-        behaviors: [Dimensions],
+        behaviors: [Dimensions, Stats],
 
         properties: {
           statData: {
@@ -75,20 +75,12 @@
           const self = this;
           this.set('displayDimensions', this.dimensions.map(d => d.name));
 
+          this.updateHashes();
           const displayInputs = [];
-
-          const dimensionHash = {};
-          const categoryHash = {};
-          objectLoop(this.rawDimensions, (key, value) => {
-            dimensionHash[key] = this.rawDimensions[key].name;
-            objectLoop(this.rawDimensions[key].categories, (k, v) => {
-              categoryHash[v.id] = v.name;
-            });
-          });
 
           stats.forEach(s => {
             let row = [];
-            objectLoop(dimensionHash, (key, value) => {
+            objectLoop(self.dimensionHash, (key, value) => {
               row.push({
                 key: key,
                 value: ''
@@ -97,8 +89,8 @@
             objectLoop(s.selected, (key, value) => {
               let foundIndex = row.findIndex(i => i.key === key);
               if (foundIndex > -1) {
-                row[foundIndex].key = dimensionHash[key];
-                row[foundIndex].value = categoryHash[value];
+                row[foundIndex].key = self.dimensionHash[key];
+                row[foundIndex].value = self.categoryHash[value];
               }
             });
             row.push({value: s.matchCount});

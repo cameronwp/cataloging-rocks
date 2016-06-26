@@ -10,10 +10,11 @@
     </style>
 
     <div class="icons">
-      <paper-icon-button icon="folder-open" title="load" class="load"></paper-icon-button>
-      <paper-icon-button icon="save" title="save" class="export"></paper-icon-button>
-      <paper-icon-button icon="refresh" title="refresh" class="export" on-click="refresh"></paper-icon-button>
-      <paper-icon-button icon="clear" title="clear" class="export" on-click="clear"></paper-icon-button>
+      <paper-icon-button icon="folder-open" title="load" class="load" on-click="load"></paper-icon-button>
+      <paper-icon-button icon="save" title="save" on-click="save"></paper-icon-button>
+      <paper-icon-button icon="assignment" title="export" on-click="export"></paper-icon-button>
+      <paper-icon-button icon="refresh" title="refresh" on-click="refresh"></paper-icon-button>
+      <paper-icon-button icon="clear" title="clear" on-click="clear"></paper-icon-button>
     </div>
   </template>
 
@@ -23,6 +24,7 @@
 
       Polymer({
         is: 'editor-actions',
+        behaviors: [Stats, Inputs],
 
         properties: {
 
@@ -44,11 +46,46 @@
             }
           });
         },
+        export: function() {
+          const self = this;
+          const {dialog} = require('electron').remote;
+
+          dialog.showSaveDialog({
+            title: 'Export Sample Set',
+            filters: [{name: 'CSV', extensions: ['csv']}]
+          }, file => {
+            if (file.indexOf('csv') > -1) {
+              stateManager.generateCSV(file);
+            }
+          });
+        },
+        load: function() {
+          const self = this;
+          const {dialog} = require('electron').remote;
+
+          dialog.showOpenDialog({
+            title: 'Open Sample Set',
+            filters: [{name: 'Sample Set', extensions: ['sample-set']}]
+          }, e => {
+            stateManager.loadFile(e);
+          });
+        },
         refresh: function() {
           const {app} = require('electron').remote;
           app.relaunch();
           app.quit();
           app.exit();
+        },
+        save: function() {
+          const self = this;
+          const {dialog} = require('electron').remote;
+
+          dialog.showSaveDialog({
+            title: 'Save Sample Set',
+            filters: [{name: 'Sample Set', extensions: ['sample-set']}]
+          }, e => {
+            stateManager.saveFile(e);
+          });
         }
       });
     })();

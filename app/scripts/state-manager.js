@@ -1,24 +1,12 @@
 const remote = require('electron').remote;
 const app = remote.app;
+const fs = require('fs');
+const csv = require('csv');
 
 const tempFile = app.getPath('appData') + '/temp.json';
-
 const nconf = require('nconf').file({file: tempFile});
 
-function StateManager() {
-  const self = this;
-  this.generateCSV = () => {
-    // loop and build!
-  };
-};
-
-function objectLoop(object, callback) {
-  for (var key in object) {
-    if (object.hasOwnProperty(key)) {
-      callback(key, object[key]);
-    }
-  }
-}
+function StateManager() {};
 
 StateManager.prototype = {
   init() {
@@ -121,7 +109,91 @@ StateManager.prototype = {
     nconf.set('categories', {});
     nconf.save();
     self.refresh();
+  },
+  loadFile(file) {
+    console.log(file);
+  },
+  saveFile(file) {
+    console.log(file);
+  },
+  generateCSV(file) {
+    let dimensions = this.getAll('dimensions');
+    let inputs = this.getAll('inputs');
+
+    const tempD = [];
+    objectLoop(dimensions, (key, value) => {
+      let categories = [];
+      objectLoop(value.categories, (k, v) => {
+        let cat = {};
+        cat[value.name] = v.name;
+        categories.push(cat);
+      });
+      tempD.push(categories);
+    });
+
+    const dimensionMatrix = tempD;
+
+    // http://stackoverflow.com/questions/18233874/get-all-the-combinations-of-n-elements-of-multidimensional-array
+    function getCombinations(arr, n) {
+      var i, j, k, elem, l = arr.length, childperm, ret=[];
+      if (n == 1) {
+        for(var i = 0; i < arr.length; i++) {
+          for(var j = 0; j < arr[i].length; j++) {
+            ret.push([arr[i][j]]);
+          }
+        }
+        return ret;
+      } else {
+        for (i = 0; i < l; i++) {
+          elem = arr.shift();
+          for (j = 0; j < elem.length; j++) {
+            childperm = getCombinations(arr.slice(), n-1);
+            for (k = 0; k < childperm.length; k++) {
+              ret.push([elem[j]].concat(childperm[k]));
+            }
+          }
+        }
+        return ret;
+      }
+      i = j = k = elem = l = childperm = ret = [] = null;
+  }
+
+    var factorialMatrix = getCombinations(dimensionMatrix, dimensionMatrix.length);
+    let headers = [];
+    objectLoop(dimensions, (key, value) => {
+      headers.push({header: value.name});
+    });
+    factorialMatrix.unshift(headers);
+
+    // csv.stringify(factorialMatrix, function(err, data) {
+    //   // process.stdout.write(data);
+    //   console.log(data);
+    // });
+    var fileContent = '';
+    csv.transform(factorialMatrix, function(data) {
+      return data.map(function(value, index) {
+        let key = Object.keys(value)[0];
+        return value[key];
+      });
+    }, function(err, data){
+      csv.stringify(data, {header: true}, function(err, data) {
+        fileContent = fileContent + data;
+        // console.log(fileContent);
+        fs.writeFileSync(file, fileContent);
+      });
+    });
   }
 }
 
-module.exports = StateManager;
+var stateManager = new StateManager();
+stateManager.init();
+
+function objectLoop(object, callback) {
+  for (var key in object) {
+    if (object.hasOwnProperty(key)) {
+      callback(key, object[key]);
+    }
+  }
+}
+
+module.exports = stateManager;

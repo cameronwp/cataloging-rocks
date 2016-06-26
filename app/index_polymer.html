@@ -31,9 +31,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
   <script>
-    var StateManager = require('./scripts/state-manager');
-    var stateManager = new StateManager();
-    stateManager.init();
+    const stateManager = require('./scripts/state-manager');
+    const menuActions = require('./scripts/menu-actions');
   </script>
 </head>
 
