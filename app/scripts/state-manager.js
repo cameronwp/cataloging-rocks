@@ -117,6 +117,7 @@ StateManager.prototype = {
     console.log(file);
   },
   generateCSV(file) {
+    const self = this;
     let dimensions = this.getAll('dimensions');
     let inputs = this.getAll('inputs');
 
@@ -156,14 +157,62 @@ StateManager.prototype = {
         return ret;
       }
       i = j = k = elem = l = childperm = ret = [] = null;
-  }
+    }
+
+    // console.log(inputs);
+
+    let inputArr = [];
+    objectLoop(inputs, (key, value) => {
+      let input = [];
+      objectLoop(value.selections, (k, v) => {
+        let ret = {};
+        let dimension = self.getById('dimensions', k).name;
+        let category = self.getById('categories', v).name;
+        ret[dimension] = category;
+        input.push(ret);
+      });
+      inputArr.push(input);
+    });
 
     var factorialMatrix = getCombinations(dimensionMatrix, dimensionMatrix.length);
+
+    console.log(inputArr);
+
+    // index of a match
+    let matches = [];
+
+    inputArr.forEach(input => {
+      factorialMatrix.forEach((fm, index) => {
+        if (deepCompare(input, fm)) {
+          matches.push(index);
+        }
+      })
+    });
+
+    // set up the matches column
+    factorialMatrix.forEach(fm => {
+      fm.push({matches: 0});
+    });
+
+    // console.log(matches);
+
+    matches.forEach(match => {
+      // console.log(factorialMatrix[match]);
+      let length = factorialMatrix[match].length;
+      factorialMatrix[match][length - 1].matches += 1;
+    });
+
     let headers = [];
     objectLoop(dimensions, (key, value) => {
       headers.push({header: value.name});
     });
+    headers.push({header: 'matches'});
     factorialMatrix.unshift(headers);
+
+    // console.log(factorialMatrix);
+
+
+    // console.log(factorialMatrix);
 
     // csv.stringify(factorialMatrix, function(err, data) {
     //   // process.stdout.write(data);
@@ -178,7 +227,6 @@ StateManager.prototype = {
     }, function(err, data){
       csv.stringify(data, {header: true}, function(err, data) {
         fileContent = fileContent + data;
-        // console.log(fileContent);
         fs.writeFileSync(file, fileContent);
       });
     });
@@ -194,6 +242,119 @@ function objectLoop(object, callback) {
       callback(key, object[key]);
     }
   }
+}
+
+function deepCompare() {
+  var i, l, leftChain, rightChain;
+
+  function compare2Objects (x, y) {
+    var p;
+
+    // remember that NaN === NaN returns false
+    // and isNaN(undefined) returns true
+    if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') {
+      return true;
+    }
+
+    // Compare primitives and functions.
+    // Check if both arguments link to the same object.
+    // Especially useful on step when comparing prototypes
+    if (x === y) {
+      return true;
+    }
+
+    // Works in case when functions are created in constructor.
+    // Comparing dates is a common scenario. Another built-ins?
+    // We can even handle functions passed across iframes
+    if ((typeof x === 'function' && typeof y === 'function') ||
+      (x instanceof Date && y instanceof Date) ||
+      (x instanceof RegExp && y instanceof RegExp) ||
+      (x instanceof String && y instanceof String) ||
+      (x instanceof Number && y instanceof Number)) {
+        return x.toString() === y.toString();
+    }
+
+    // At last checking prototypes as good a we can
+    if (!(x instanceof Object && y instanceof Object)) {
+      return false;
+    }
+
+    if (x.isPrototypeOf(y) || y.isPrototypeOf(x)) {
+      return false;
+    }
+
+    if (x.constructor !== y.constructor) {
+      return false;
+    }
+
+    if (x.prototype !== y.prototype) {
+      return false;
+    }
+
+    // Check for infinitive linking loops
+    if (leftChain.indexOf(x) > -1 || rightChain.indexOf(y) > -1) {
+       return false;
+    }
+
+    // Quick checking of one object beeing a subset of another.
+    // todo: cache the structure of arguments[0] for performance
+    for (p in y) {
+      if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+        return false;
+      }
+      else if (typeof y[p] !== typeof x[p]) {
+        return false;
+      }
+    }
+
+    for (p in x) {
+      if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) {
+        return false;
+      }
+      else if (typeof y[p] !== typeof x[p]) {
+        return false;
+      }
+
+      switch (typeof (x[p])) {
+        case 'object':
+        case 'function':
+          leftChain.push(x);
+          rightChain.push(y);
+
+          if (!compare2Objects (x[p], y[p])) {
+            return false;
+          }
+
+          leftChain.pop();
+          rightChain.pop();
+          break;
+
+        default:
+          if (x[p] !== y[p]) {
+            return false;
+          }
+          break;
+      }
+    }
+
+    return true;
+  }
+
+  if (arguments.length < 1) {
+    return true; //Die silently? Don't know how to handle such case, please help...
+    // throw "Need two or more arguments to compare";
+  }
+
+  for (i = 1, l = arguments.length; i < l; i++) {
+
+    leftChain = []; //Todo: this can be cached
+    rightChain = [];
+
+    if (!compare2Objects(arguments[0], arguments[i])) {
+      return false;
+    }
+  }
+  return true;
 }
 
 module.exports = stateManager;
