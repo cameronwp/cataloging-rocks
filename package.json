@@ -2,15 +2,15 @@
   "name": "Cataloging-Rocks",
   "version": "1.0.0",
   "description": "Cataloging Rocks",
-  "main": "main.js",
+  "main": "./main.js",
   "scripts": {
     "start": "electron main.js",
     "watch": "npm-watch",
-    "package": "./node_modules/.bin/electron-packager app DSS --platform=darwin --arch=x64 --version=1.0.1 --app-category-type=public.app-category.education --icon=icon.icns --overwrite"
+    "package": "./node_modules/.bin/electron-packager . Cataloging\\ Rocks --platform=darwin --arch=x64 --version=1.0.1 --app-category-type=public.app-category.education --icon=icon.icns --overwrite"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cameronwp/electron-quick-start.git"
+    "url": "git+https://github.com/cameronwp/cataloging-rocks.git"
   },
   "keywords": [
     "Electron",
