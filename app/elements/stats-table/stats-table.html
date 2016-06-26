@@ -1,0 +1,120 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="stats-table">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      span {
+        @apply(--paper-font-body1);
+      }
+    </style>
+
+    <div id="content">
+      <table>
+        <tr>
+          <template is="dom-repeat" items="{{displayDimensions}}">
+            <th>{{item}}</th>
+          </template>
+          <th>Matches</th>
+        </tr>
+        <template is="dom-repeat" items="{{displayInputs}}" as="input">
+          <tr>
+            <template is="dom-repeat" items="{{input}}" as="dimension">
+              <td>{{dimension.value}}</td>
+            </template>
+          </tr>
+        </template>
+      </table>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'stats-table',
+        behaviors: [Dimensions],
+
+        properties: {
+          statData: {
+            type: Object,
+            notify: true,
+            observer: 'update'
+          },
+          displayDimensions: {
+            type: Array,
+            notify: true,
+            value: function() {
+              return [];
+            }
+          },
+          displayInputs: {
+            type: Array,
+            notify: true,
+            value: function() {
+              return [];
+            }
+          },
+          name: {
+            type: String,
+            value: ''
+          },
+          id: {
+            type: Number,
+            value: 0
+          }
+        },
+        ready: function() {
+        },
+        update: function(stats) {
+          const self = this;
+          this.set('displayDimensions', this.dimensions.map(d => d.name));
+
+          const displayInputs = [];
+
+          const dimensionHash = {};
+          const categoryHash = {};
+          objectLoop(this.rawDimensions, (key, value) => {
+            dimensionHash[key] = this.rawDimensions[key].name;
+            objectLoop(this.rawDimensions[key].categories, (k, v) => {
+              categoryHash[v.id] = v.name;
+            });
+          });
+
+          stats.forEach(s => {
+            let row = [];
+            objectLoop(dimensionHash, (key, value) => {
+              row.push({
+                key: key,
+                value: ''
+              });
+            });
+            objectLoop(s.selected, (key, value) => {
+              let foundIndex = row.findIndex(i => i.key === key);
+              if (foundIndex > -1) {
+                row[foundIndex].key = dimensionHash[key];
+                row[foundIndex].value = categoryHash[value];
+              }
+            });
+            row.push({value: s.matchCount});
+            displayInputs.push(row);
+          });
+
+          this.set('displayInputs', displayInputs);
+        }
+      });
+      function objectLoop(object, callback) {
+        for (var key in object) {
+          if (object.hasOwnProperty(key)) {
+            callback(key, object[key]);
+          }
+        }
+      }
+    })();
+  </script>
+</dom-module>
